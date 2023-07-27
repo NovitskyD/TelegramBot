@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import telegramBot.configuration.TelegramBotConfig;
 
 @Component
+@Slf4j
 public class TelegramBot extends TelegramLongPollingBot {
     private final TelegramBotConfig config;
 
@@ -31,9 +32,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         var originalMessage = update.getMessage();
         String messageText = originalMessage.getText();
         if (messageText != null) {
-            System.out.println(messageText);
+            log.debug("Received message: {}", messageText);
         } else {
-            System.out.println("Received message text is null");
+            log.error("Received message text is null");
         }
 
         var response = new SendMessage();
@@ -47,7 +48,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             try {
                 execute(message);
             } catch (TelegramApiException e ){
-                System.out.println(e);
+                log.error(String.valueOf(e));
             }
         }
     }
