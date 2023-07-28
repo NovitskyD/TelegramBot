@@ -13,10 +13,18 @@ import telegramBot.configuration.TelegramBotConfig;
 @Slf4j
 public class TelegramBot extends TelegramLongPollingBot {
     private final TelegramBotConfig config;
+    private final UpdateProcessor updateProcessor;
 
     public TelegramBot(TelegramBotConfig config, UpdateProcessor updateProcessor) {
         this.config = config;
+        this.updateProcessor = updateProcessor;
     }
+
+    @PostConstruct
+    public void init(){
+        updateProcessor.registerBot(this);
+    }
+
     @Override
     public String getBotUsername() {
         return config.getBotName();
@@ -29,18 +37,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        var originalMessage = update.getMessage();
-        String messageText = originalMessage.getText();
-        if (messageText != null) {
-            log.debug("Received message: {}", messageText);
-        } else {
-            log.error("Received message text is null");
-        }
-
-        var response = new SendMessage();
-        response.setChatId(originalMessage.getChatId().toString());
-        response.setText("Hello from bot");
-        sendAnswerMessage(response);
+        updateProcessor.processUpdate(update);
     }
 
     public void sendAnswerMessage(SendMessage message){
