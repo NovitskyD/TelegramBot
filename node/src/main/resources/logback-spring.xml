@@ -9,7 +9,7 @@
 
     <!-- File Appender for INFO level logs -->
     <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>./logs/info-dispatcher.log</file>
+        <file>./logs/info-node.log</file>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36}:%L - %msg%n</pattern>
         </encoder>
@@ -25,13 +25,13 @@
 
     <!-- File Appender for DEBUG level logs -->
     <appender name="DEBUG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>./logs/debug-dispatcher.log</file>
+        <file>./logs/debug-node.log</file>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36}:%L - %msg%n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- Use only date-based rolling without the integer token -->
-            <fileNamePattern>./logs/debug-dispatcher.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>./logs/debug-node.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>10</maxHistory>
         </rollingPolicy>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
@@ -42,13 +42,13 @@
     </appender>
 
     <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>./logs/error-dispatcher.log</file>
+        <file>./logs/error-node.log</file>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36}:%L - %msg%n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- Use only date-based rolling without the integer token -->
-            <fileNamePattern>./logs/error-dispatcher.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>./logs/error-node.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>10</maxHistory>
         </rollingPolicy>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
