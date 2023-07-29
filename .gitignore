@@ -9,7 +9,6 @@ target/
 .idea/compiler.xml
 .idea/encodings.xml
 .idea/libraries/
-.dispatcher/src/main/resources/bot.properties
 *.iws
 *.iml
 *.ipr
@@ -38,3 +37,9 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Bot properties ###
+dispatcher/src/main/resources/bot.properties
+
+### Logs ###
+logs/
