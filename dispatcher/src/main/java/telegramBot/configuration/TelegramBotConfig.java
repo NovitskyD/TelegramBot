@@ -13,7 +13,7 @@ import telegramBot.controller.TelegramBot;
 
 @Configuration
 @Data
-@PropertySource("classpath:application.properties")
+@PropertySource("classpath:bot.properties")
 public class TelegramBotConfig {
     @Value("${bot.name}")
     private String botName;
