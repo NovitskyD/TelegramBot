@@ -20,6 +20,7 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long telegramUserid;
+    private String username;
     private String firstName;
     private String lastName;
     private String email;
