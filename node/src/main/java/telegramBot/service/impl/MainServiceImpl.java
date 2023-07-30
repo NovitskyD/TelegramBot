@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import telegramBot.dao.RawDataDAO;
 import telegramBot.dao.AppUserDAO;
 import telegramBot.entity.AppDocument;
+import telegramBot.entity.AppPhoto;
 import telegramBot.entity.RawData;
 import telegramBot.entity.AppUser;
 import telegramBot.exceptions.UploadFileException;
@@ -89,8 +90,16 @@ public class MainServiceImpl implements MainService {
         if (isNotAllowedToSendContent(chatId, appUser)){
             return;
         }
-        var answer = "Заглушка PHOTO";
-        sendAnswer(answer, chatId);
+        try {
+            AppPhoto photo = fileService.processPhoto(update.getMessage());
+            //TODO generate URL
+            String anwer = "Заглушка PHOTO";
+            sendAnswer(anwer, chatId);
+        } catch (UploadFileException e){
+            log.error(String.valueOf(e));
+            String error = "Unsuccessful attempt to upload photo. Please try again later";
+            sendAnswer(error, chatId);
+        }
     }
 
     private boolean isNotAllowedToSendContent(String chatId, AppUser appUser) {
