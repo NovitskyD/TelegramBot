@@ -7,8 +7,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import telegramBot.dao.RawDataDAO;
 import telegramBot.dao.AppUserDAO;
+import telegramBot.entity.AppDocument;
 import telegramBot.entity.RawData;
 import telegramBot.entity.AppUser;
+import telegramBot.exceptions.UploadFileException;
+import telegramBot.service.FileService;
 import telegramBot.service.MainService;
 import telegramBot.service.ProducerService;
 import telegramBot.service.enums.ServiceCommands;
@@ -23,11 +26,16 @@ public class MainServiceImpl implements MainService {
     private final RawDataDAO rawDataDAO;
     private final ProducerService producerService;
     private final AppUserDAO appUserDAO;
+    private final FileService fileService;
 
-    public MainServiceImpl(RawDataDAO rawDataDAO, ProducerService producerService, AppUserDAO appUserDAO) {
+    public MainServiceImpl(RawDataDAO rawDataDAO,
+                           ProducerService producerService,
+                           AppUserDAO appUserDAO,
+                           FileService fileService) {
         this.rawDataDAO = rawDataDAO;
         this.producerService = producerService;
         this.appUserDAO = appUserDAO;
+        this.fileService = fileService;
     }
 
     public void processTextMessage(Update update) {
@@ -61,8 +69,16 @@ public class MainServiceImpl implements MainService {
         if (isNotAllowedToSendContent(chatId, appUser)) {
             return;
         }
-        var answer = "Заглушка DOC";
-        sendAnswer(answer, chatId);
+        try {
+            AppDocument document = fileService.processDoc(update.getMessage());
+            //TODO generate URL
+            String anwer = "Заглушка DOC";
+            sendAnswer(anwer, chatId);
+        } catch (UploadFileException e){
+            log.error(String.valueOf(e));
+            String error = "Unsuccessful attempt to upload file. Please try again later";
+            sendAnswer(error, chatId);
+        }
     }
 
     @Override
