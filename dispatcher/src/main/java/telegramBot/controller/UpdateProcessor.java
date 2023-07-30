@@ -41,6 +41,7 @@ public class UpdateProcessor {
     private void distributeMessagesByType(Update update) {
         var message = update.getMessage();
         if (message.hasText()){
+            log.debug("Has text : " + update);
             processTextMessage(update);
         } else if (message.hasDocument()){
             processDocMessage(update);
@@ -66,6 +67,7 @@ public class UpdateProcessor {
     }
 
     public void setView(SendMessage sendMessage) {
+        log.debug("setView: " + sendMessage.getText());
         telegramBot.sendAnswerMessage(sendMessage);
     }
 
@@ -81,7 +83,5 @@ public class UpdateProcessor {
 
     private void processTextMessage(Update update) {
         updateProducer.produce(TEXT_MESSAGE_UPDATE, update);
-        setFileIsReceivedView(update);
     }
-
 }
