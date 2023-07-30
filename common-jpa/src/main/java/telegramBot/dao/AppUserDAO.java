@@ -1,8 +1,8 @@
 package telegramBot.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import telegramBot.entity.UserEntity;
+import telegramBot.entity.AppUser;
 
-public interface UserEntityDAO extends JpaRepository<UserEntity, Long> {
-    UserEntity findUserEntityByTelegramUserid(Long id);
+public interface AppUserDAO extends JpaRepository<AppUser, Long> {
+    AppUser findAppUserByTelegramUserid(Long id);
 }
