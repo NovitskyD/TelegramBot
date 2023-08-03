@@ -12,6 +12,7 @@ import telegramBot.entity.AppPhoto;
 import telegramBot.entity.RawData;
 import telegramBot.entity.AppUser;
 import telegramBot.exceptions.UploadFileException;
+import telegramBot.service.AppUserService;
 import telegramBot.service.FileService;
 import telegramBot.service.MainService;
 import telegramBot.service.ProducerService;
@@ -31,15 +32,17 @@ public class MainServiceImpl implements MainService {
     private final ProducerService producerService;
     private final AppUserDAO appUserDAO;
     private final FileService fileService;
+    private final AppUserService appUserService;
 
     public MainServiceImpl(RawDataDAO rawDataDAO,
                            ProducerService producerService,
                            AppUserDAO appUserDAO,
-                           FileService fileService) {
+                           FileService fileService, AppUserService appUserService) {
         this.rawDataDAO = rawDataDAO;
         this.producerService = producerService;
         this.appUserDAO = appUserDAO;
         this.fileService = fileService;
+        this.appUserService = appUserService;
     }
 
     public void processTextMessage(Update update) {
@@ -55,7 +58,7 @@ public class MainServiceImpl implements MainService {
         } else if (BASIC_STATE.equals(userState)) {
             output = processServiceCommand(appUser, text);
         } else if (WAIT_FOR_EMAIL_STATE.equals(userState)) {
-            //TODO добавить обработку емейла
+            output = appUserService.setEmail(appUser, text);
         } else {
             log.error("Unknown user state: " + userState);
             output = "Unknown error! Type /cancel and try again!";
@@ -137,10 +140,9 @@ public class MainServiceImpl implements MainService {
             return "Unknown command! To see a list of available commands, type /help";
         }
         return switch (serviceCommand){
+            case REGISTRATION -> appUserService.registerUser(appUser);
             case HELP -> help();
             case START -> "Greetings! To see a list of available commands, type /help";
-            // TODO добавить регистрацию
-            case REGISTRATION -> "Временно недоступно";
             default -> "Unknown command! To see a list of available commands, type /help";
         };
     }
@@ -160,14 +162,13 @@ public class MainServiceImpl implements MainService {
     private AppUser findOrSaveAppUser(Update update){
         User telegramUser = update.getMessage().getFrom();
         Optional<AppUser> persistentAppUser = appUserDAO.findAppUserByTelegramUserid(telegramUser.getId());
-        if(persistentAppUser.isEmpty()){
+        if (persistentAppUser.isEmpty()){
             AppUser transientAppUser = AppUser.builder()
                     .telegramUserid(telegramUser.getId())
                     .username(telegramUser.getUserName())
                     .firstName(telegramUser.getFirstName())
                     .lastName(telegramUser.getLastName())
-                    //TODO email activator
-                    .isActive(true)
+                    .isActive(false)
                     .state(BASIC_STATE)
                     .build();
             return appUserDAO.save(transientAppUser);
