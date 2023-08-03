@@ -15,6 +15,7 @@ import telegramBot.exceptions.UploadFileException;
 import telegramBot.service.FileService;
 import telegramBot.service.MainService;
 import telegramBot.service.ProducerService;
+import telegramBot.service.enums.LinkType;
 import telegramBot.service.enums.ServiceCommands;
 
 import static telegramBot.entity.enums.UserState.BASIC_STATE;
@@ -72,9 +73,11 @@ public class MainServiceImpl implements MainService {
         }
         try {
             AppDocument document = fileService.processDoc(update.getMessage());
-            //TODO generate URL
-            String anwer = "Заглушка DOC";
-            sendAnswer(anwer, chatId);
+            String link = fileService.generateLink(document.getId(), LinkType.GET_DOC);
+            String answer = "Document uploaded successfully! " +
+                    "Download link: " + link;
+
+            sendAnswer(answer, chatId);
         } catch (UploadFileException e){
             log.error(String.valueOf(e));
             String error = "Unsuccessful attempt to upload file. Please try again later";
@@ -92,9 +95,11 @@ public class MainServiceImpl implements MainService {
         }
         try {
             AppPhoto photo = fileService.processPhoto(update.getMessage());
-            //TODO generate URL
-            String anwer = "Заглушка PHOTO";
-            sendAnswer(anwer, chatId);
+            String link = fileService.generateLink(photo.getId(), LinkType.GET_PHOTO);
+            String answer = "Photo uploaded successfully! " +
+                    "Photo link: " + link;
+
+            sendAnswer(answer, chatId);
         } catch (UploadFileException e){
             log.error(String.valueOf(e));
             String error = "Unsuccessful attempt to upload photo. Please try again later";
@@ -132,7 +137,7 @@ public class MainServiceImpl implements MainService {
         return switch (serviceCommand){
             case HELP -> help();
             case START -> "Greetings! To see a list of available commands, type /help";
-            //TODO добавить регистрацию
+            // TODO добавить регистрацию
             case REGISTRATION -> "Временно недоступно";
             default -> "Unknown command! To see a list of available commands, type /help";
         };
