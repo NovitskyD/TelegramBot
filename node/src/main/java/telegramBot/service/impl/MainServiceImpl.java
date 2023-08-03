@@ -18,6 +18,8 @@ import telegramBot.service.ProducerService;
 import telegramBot.service.enums.LinkType;
 import telegramBot.service.enums.ServiceCommands;
 
+import java.util.Optional;
+
 import static telegramBot.entity.enums.UserState.BASIC_STATE;
 import static telegramBot.entity.enums.UserState.WAIT_FOR_EMAIL_STATE;
 import static telegramBot.service.enums.ServiceCommands.*;
@@ -157,8 +159,8 @@ public class MainServiceImpl implements MainService {
 
     private AppUser findOrSaveAppUser(Update update){
         User telegramUser = update.getMessage().getFrom();
-        AppUser persistentAppUser = appUserDAO.findAppUserByTelegramUserid(telegramUser.getId());
-        if(persistentAppUser == null){
+        Optional<AppUser> persistentAppUser = appUserDAO.findAppUserByTelegramUserid(telegramUser.getId());
+        if(persistentAppUser.isEmpty()){
             AppUser transientAppUser = AppUser.builder()
                     .telegramUserid(telegramUser.getId())
                     .username(telegramUser.getUserName())
@@ -170,7 +172,7 @@ public class MainServiceImpl implements MainService {
                     .build();
             return appUserDAO.save(transientAppUser);
         }
-        return persistentAppUser;
+        return persistentAppUser.get();
     }
 
     private void saveRawData(Update update) {
