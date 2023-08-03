@@ -43,3 +43,5 @@ dispatcher/src/main/resources/bot.properties
 
 ### Logs ###
 logs/
+/rest-service/src/main/resources/security.properties
+/node/src/main/resources/bot.properties
